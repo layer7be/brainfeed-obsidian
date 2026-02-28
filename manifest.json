@@ -1,9 +1,9 @@
 {
   "id": "brainfeed",
-  "name": "Brainfeed",
+  "name": "Brainfeed.ai",
   "version": "1.0.5",
   "minAppVersion": "1.0.0",
-  "description": "Sync your Brainfeed content to Obsidian and send notes to Brainfeed for summarization.",
+  "description": "Sync your Brainfeed content and send notes for summarization.",
   "author": "Brainfeed",
   "authorUrl": "https://brainfeed.ai",
   "isDesktopOnly": false

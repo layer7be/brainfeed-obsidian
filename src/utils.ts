@@ -13,6 +13,7 @@ export function slugify(text: string): string {
 /** Sanitize a filename, removing characters invalid on most file systems. */
 export function sanitizeFilename(name: string): string {
   return name
+    // eslint-disable-next-line no-control-regex
     .replace(/[<>:"/\\|?*\x00-\x1f]/g, '')
     .replace(/\s+/g, ' ')
     .trim()

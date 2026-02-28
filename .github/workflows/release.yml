@@ -24,6 +24,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Check
+        run: npm run check
+
       - name: Bump patch version
         id: version
         run: |
