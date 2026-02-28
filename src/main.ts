@@ -102,7 +102,7 @@ export default class BrainfeedPlugin extends Plugin {
 
     try {
       const { result, newTimestamp } = await pullSync(
-        this.app.vault,
+        this.app,
         api,
         this.settings.syncFolder,
         this.getScope(),
@@ -131,7 +131,7 @@ export default class BrainfeedPlugin extends Plugin {
     }
 
     try {
-      await pushToBrainfeed(this.app.vault, api, file)
+      await pushToBrainfeed(this.app, api, file)
     } catch (err) {
       console.error('[brainfeed] Ingest failed:', err)
       new Notice(`Brainfeed: Send failed — ${err instanceof Error ? err.message : 'unknown error'}`)

@@ -1,32 +1,26 @@
-import { TFile, Vault } from 'obsidian'
+import { TFile } from 'obsidian'
+import type { App } from 'obsidian'
 
 /**
  * Find a file in the sync folder that has a matching brainfeed_id
- * in its YAML frontmatter.
+ * in its YAML frontmatter, using the MetadataCache for fast lookups.
  */
-export async function findFileByBrainfeedId(
-  vault: Vault,
+export function findFileByBrainfeedId(
+  app: App,
   syncFolder: string,
   brainfeedId: string,
-): Promise<TFile | null> {
-  const folder = vault.getAbstractFileByPath(syncFolder)
+): TFile | null {
+  const folder = app.vault.getAbstractFileByPath(syncFolder)
   if (!folder) return null
 
-  const files = vault.getMarkdownFiles().filter(
+  const files = app.vault.getMarkdownFiles().filter(
     (f) => f.path.startsWith(syncFolder + '/'),
   )
 
   for (const file of files) {
-    const content = await vault.cachedRead(file)
-    const match = content.match(/^---\n([\s\S]*?)\n---/)
-    if (!match) continue
-
-    const frontmatter = match[1]
-    const idMatch = frontmatter.match(/brainfeed_id:\s*(.+)/)
-    if (idMatch) {
-      const id = idMatch[1].trim().replace(/^["']|["']$/g, '')
-      if (id === brainfeedId) return file
-    }
+    const cache = app.metadataCache.getFileCache(file)
+    const id = cache?.frontmatter?.brainfeed_id
+    if (id != null && String(id) === brainfeedId) return file
   }
 
   return null

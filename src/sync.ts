@@ -1,6 +1,7 @@
-import { Notice, Vault, normalizePath } from 'obsidian'
+import { Notice, normalizePath } from 'obsidian'
 import { findFileByBrainfeedId } from './frontmatter'
 import { slugify } from './utils'
+import type { App } from 'obsidian'
 import type { BrainfeedApi, ExportScope, SyncItem } from './api'
 
 export interface SyncResult {
@@ -14,16 +15,16 @@ export interface SyncResult {
  * markdown files in the sync folder.
  */
 export async function pullSync(
-  vault: Vault,
+  app: App,
   api: BrainfeedApi,
   syncFolder: string,
   scope: ExportScope,
   lastSyncTimestamp: number,
 ): Promise<{ result: SyncResult; newTimestamp: number }> {
   // Ensure sync folder exists
-  const folderExists = vault.getAbstractFileByPath(syncFolder)
+  const folderExists = app.vault.getAbstractFileByPath(syncFolder)
   if (!folderExists) {
-    await vault.createFolder(syncFolder)
+    await app.vault.createFolder(syncFolder)
   }
 
   const result: SyncResult = { created: 0, updated: 0, errors: 0 }
@@ -39,15 +40,15 @@ export async function pullSync(
 
     for (const item of items) {
       try {
-        await syncItem(vault, api, syncFolder, scope, item)
+        await syncItem(app, api, syncFolder, scope, item)
 
         if (item.updatedAt > maxTimestamp) {
           maxTimestamp = item.updatedAt
         }
 
         // Check if file existed
-        const existingFile = await findFileByBrainfeedId(
-          vault,
+        const existingFile = findFileByBrainfeedId(
+          app,
           syncFolder,
           item.id,
         )
@@ -74,7 +75,7 @@ export async function pullSync(
 }
 
 async function syncItem(
-  vault: Vault,
+  app: App,
   api: BrainfeedApi,
   syncFolder: string,
   scope: ExportScope,
@@ -84,15 +85,15 @@ async function syncItem(
   const content = await api.getContent(item.id, scope)
 
   // Check if a file already exists for this brainfeed_id
-  const existingFile = await findFileByBrainfeedId(
-    vault,
+  const existingFile = findFileByBrainfeedId(
+    app,
     syncFolder,
     item.id,
   )
 
   if (existingFile) {
     // Update existing file
-    await vault.modify(existingFile, content.markdown)
+    await app.vault.process(existingFile, () => content.markdown)
   } else {
     // Create new file
     const fileName = `${slugify(item.title) || item.id}.md`
@@ -101,14 +102,14 @@ async function syncItem(
     // Avoid name collisions
     let finalPath = filePath
     let counter = 1
-    while (vault.getAbstractFileByPath(finalPath)) {
+    while (app.vault.getAbstractFileByPath(finalPath)) {
       finalPath = normalizePath(
         `${syncFolder}/${slugify(item.title) || item.id}-${counter}.md`,
       )
       counter++
     }
 
-    await vault.create(finalPath, content.markdown)
+    await app.vault.create(finalPath, content.markdown)
   }
 }
 

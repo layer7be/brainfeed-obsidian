@@ -1,16 +1,17 @@
-import { Notice, TFile, Vault } from 'obsidian'
+import { Notice, TFile } from 'obsidian'
 import { extractBrainfeedId } from './frontmatter'
+import type { App } from 'obsidian'
 import type { BrainfeedApi } from './api'
 
 /**
  * Push the active file to Brainfeed for summarization.
  */
 export async function pushToBrainfeed(
-  vault: Vault,
+  app: App,
   api: BrainfeedApi,
   file: TFile,
 ): Promise<void> {
-  const content = await vault.read(file)
+  const content = await app.vault.read(file)
 
   // Parse frontmatter to extract title and any existing brainfeed_id
   const existingId = extractBrainfeedId(content)
@@ -51,15 +52,10 @@ export async function pushToBrainfeed(
 
   const result = await api.ingest({ title, content: body, tags })
 
-  // Update frontmatter with brainfeed_id
-  if (fmMatch) {
-    const updatedFrontmatter = fmMatch[1] + `\nbrainfeed_id: ${result.contentId}`
-    const updatedContent = `---\n${updatedFrontmatter}\n---${content.slice(fmMatch[0].length)}`
-    await vault.modify(file, updatedContent)
-  } else {
-    const newContent = `---\nbrainfeed_id: ${result.contentId}\n---\n\n${content}`
-    await vault.modify(file, newContent)
-  }
+  // Update frontmatter with brainfeed_id using processFrontMatter
+  await app.fileManager.processFrontMatter(file, (fm) => {
+    fm.brainfeed_id = result.contentId
+  })
 
   new Notice(
     result.isNew

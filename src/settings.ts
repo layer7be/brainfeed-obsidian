@@ -41,8 +41,6 @@ export class BrainfeedSettingTab extends PluginSettingTab {
     const { containerEl } = this
     containerEl.empty()
 
-    containerEl.createEl('h2', { text: 'Brainfeed Settings' })
-
     // API URL
     new Setting(containerEl)
       .setName('API URL')
@@ -59,18 +57,18 @@ export class BrainfeedSettingTab extends PluginSettingTab {
 
     // API Key with verify button
     const apiKeySetting = new Setting(containerEl)
-      .setName('API Key')
+      .setName('API key')
       .setDesc('Your Brainfeed API key (Settings > API Keys)')
-      .addText((text) =>
+      .addText((text) => {
+        text.inputEl.type = 'password'
         text
           .setPlaceholder('Enter your API key')
           .setValue(this.plugin.settings.apiKey)
-          .then((t) => { t.inputEl.type = 'password' })
           .onChange(async (value) => {
             this.plugin.settings.apiKey = value.trim()
             await this.plugin.saveSettings()
-          }),
-      )
+          })
+      })
 
     apiKeySetting.addButton((btn) =>
       btn.setButtonText('Verify').onClick(async () => {
@@ -103,7 +101,7 @@ export class BrainfeedSettingTab extends PluginSettingTab {
 
     // Sync Folder
     new Setting(containerEl)
-      .setName('Sync Folder')
+      .setName('Sync folder')
       .setDesc('Folder where synced content will be saved')
       .addText((text) =>
         text
@@ -135,11 +133,10 @@ export class BrainfeedSettingTab extends PluginSettingTab {
       )
 
     // Scope toggles
-    containerEl.createEl('h3', { text: 'Content Scope' })
-    containerEl.createEl('p', {
-      text: 'Choose what to include when syncing content from Brainfeed.',
-      cls: 'setting-item-description',
-    })
+    new Setting(containerEl)
+      .setName('Content scope')
+      .setHeading()
+      .setDesc('Choose what to include when syncing content from Brainfeed.')
 
     new Setting(containerEl)
       .setName('Summary')
@@ -153,7 +150,7 @@ export class BrainfeedSettingTab extends PluginSettingTab {
       )
 
     new Setting(containerEl)
-      .setName('Key Points')
+      .setName('Key points')
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.includeKeyPoints)
@@ -164,7 +161,7 @@ export class BrainfeedSettingTab extends PluginSettingTab {
       )
 
     new Setting(containerEl)
-      .setName('Highlights / Annotations')
+      .setName('Highlights / annotations')
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.includeAnnotations)
@@ -175,7 +172,7 @@ export class BrainfeedSettingTab extends PluginSettingTab {
       )
 
     new Setting(containerEl)
-      .setName('Full Text')
+      .setName('Full text')
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.includeFullText)
