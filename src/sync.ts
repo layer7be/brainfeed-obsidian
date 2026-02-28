@@ -121,8 +121,8 @@ export function showSyncNotice(result: SyncResult): void {
   if (result.errors > 0) parts.push(`${result.errors} errors`)
 
   if (parts.length === 0) {
-    new Notice('Brainfeed: Everything is up to date')
+    new Notice('Everything is up to date')
   } else {
-    new Notice(`Brainfeed: Synced ${parts.join(', ')}`)
+    new Notice(`Synced ${parts.join(', ')}`)
   }
 }

@@ -11,5 +11,8 @@ export default defineConfig({
   test: {
     include: ['src/**/*.test.ts'],
     setupFiles: ['src/__tests__/setup.ts'],
+    onConsoleLog(log) {
+      if (log.includes('[brainfeed]')) return false
+    },
   },
 })

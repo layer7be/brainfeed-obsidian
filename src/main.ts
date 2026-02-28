@@ -17,22 +17,22 @@ export default class BrainfeedPlugin extends Plugin {
     this.addSettingTab(new BrainfeedSettingTab(this.app, this))
 
     // Ribbon icon for manual sync
-    this.addRibbonIcon('refresh-cw', 'Sync from Brainfeed', async () => {
+    this.addRibbonIcon('refresh-cw', 'Sync content', async () => {
       await this.runSync()
     })
 
     // Commands
     this.addCommand({
-      id: 'sync-from-brainfeed',
-      name: 'Sync from Brainfeed',
+      id: 'sync',
+      name: 'Sync content',
       callback: async () => {
         await this.runSync()
       },
     })
 
     this.addCommand({
-      id: 'send-to-brainfeed',
-      name: 'Send to Brainfeed',
+      id: 'send-note',
+      name: 'Send current note',
       editorCallback: async () => {
         await this.runIngest()
       },
@@ -47,7 +47,7 @@ export default class BrainfeedPlugin extends Plugin {
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData())
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<BrainfeedSettings>)
   }
 
   async saveSettings() {
@@ -60,8 +60,8 @@ export default class BrainfeedPlugin extends Plugin {
 
     if (this.settings.autoSyncMinutes > 0) {
       const intervalMs = this.settings.autoSyncMinutes * 60 * 1000
-      this.autoSyncInterval = setInterval(async () => {
-        await this.runSync()
+      this.autoSyncInterval = setInterval(() => {
+        void this.runSync()
       }, intervalMs)
 
       // Register for cleanup on plugin unload
@@ -78,7 +78,7 @@ export default class BrainfeedPlugin extends Plugin {
 
   private getApi(): BrainfeedApi | null {
     if (!this.settings.apiKey) {
-      new Notice('Brainfeed: Please set your API key in settings')
+      new Notice('Please set your API key in settings')
       return null
     }
     return new BrainfeedApi(this.settings.apiUrl, this.settings.apiKey)
@@ -98,7 +98,7 @@ export default class BrainfeedPlugin extends Plugin {
     const api = this.getApi()
     if (!api) return
 
-    new Notice('Brainfeed: Syncing...')
+    new Notice('Syncing...')
 
     try {
       const { result, newTimestamp } = await pullSync(
@@ -116,7 +116,7 @@ export default class BrainfeedPlugin extends Plugin {
       showSyncNotice(result)
     } catch (err) {
       console.error('[brainfeed] Sync failed:', err)
-      new Notice(`Brainfeed: Sync failed — ${err instanceof Error ? err.message : 'unknown error'}`)
+      new Notice(`Sync failed — ${err instanceof Error ? err.message : 'unknown error'}`)
     }
   }
 
@@ -126,7 +126,7 @@ export default class BrainfeedPlugin extends Plugin {
 
     const file = this.app.workspace.getActiveFile()
     if (!file) {
-      new Notice('Brainfeed: No active file')
+      new Notice('No active file')
       return
     }
 
@@ -134,7 +134,7 @@ export default class BrainfeedPlugin extends Plugin {
       await pushToBrainfeed(this.app, api, file)
     } catch (err) {
       console.error('[brainfeed] Ingest failed:', err)
-      new Notice(`Brainfeed: Send failed — ${err instanceof Error ? err.message : 'unknown error'}`)
+      new Notice(`Send failed — ${err instanceof Error ? err.message : 'unknown error'}`)
     }
   }
 }

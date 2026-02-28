@@ -58,7 +58,7 @@ export class BrainfeedSettingTab extends PluginSettingTab {
     // API Key with verify button
     const apiKeySetting = new Setting(containerEl)
       .setName('API key')
-      .setDesc('Your Brainfeed API key (Settings > API Keys)')
+      .setDesc('Your Brainfeed API key (settings > API keys)')
       .addText((text) => {
         text.inputEl.type = 'password'
         text
@@ -136,7 +136,7 @@ export class BrainfeedSettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName('Content scope')
       .setHeading()
-      .setDesc('Choose what to include when syncing content from Brainfeed.')
+      .setDesc('Choose what to include when syncing')
 
     new Setting(containerEl)
       .setName('Summary')

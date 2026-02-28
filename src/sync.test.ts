@@ -25,6 +25,7 @@ describe('pullSync', () => {
 
     await pullSync(app, api, 'Brainfeed', defaultScope, 0)
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- vitest mock function assigned as class property
     expect(app.vault.createFolder).toHaveBeenCalledWith('Brainfeed')
   })
 
@@ -69,6 +70,7 @@ describe('pullSync', () => {
 
     const { result } = await pullSync(app, api, 'Brainfeed', defaultScope, 0)
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- vitest mock function assigned as class property
     expect(app.vault.create).toHaveBeenCalled()
     expect(result.created).toBe(1)
   })
@@ -212,27 +214,27 @@ describe('showSyncNotice', () => {
 
   it('shows "up to date" for zero counts', () => {
     showSyncNotice({ created: 0, updated: 0, errors: 0 })
-    expect(noticeHistory[noticeHistory.length - 1]).toBe('Brainfeed: Everything is up to date')
+    expect(noticeHistory[noticeHistory.length - 1]).toBe('Everything is up to date')
   })
 
   it('shows created count', () => {
     showSyncNotice({ created: 3, updated: 0, errors: 0 })
-    expect(noticeHistory[noticeHistory.length - 1]).toBe('Brainfeed: Synced 3 new')
+    expect(noticeHistory[noticeHistory.length - 1]).toBe('Synced 3 new')
   })
 
   it('shows updated count', () => {
     showSyncNotice({ created: 0, updated: 2, errors: 0 })
-    expect(noticeHistory[noticeHistory.length - 1]).toBe('Brainfeed: Synced 2 updated')
+    expect(noticeHistory[noticeHistory.length - 1]).toBe('Synced 2 updated')
   })
 
   it('shows error count', () => {
     showSyncNotice({ created: 0, updated: 0, errors: 1 })
-    expect(noticeHistory[noticeHistory.length - 1]).toBe('Brainfeed: Synced 1 errors')
+    expect(noticeHistory[noticeHistory.length - 1]).toBe('Synced 1 errors')
   })
 
   it('combines created, updated, and error counts', () => {
     const result: SyncResult = { created: 2, updated: 3, errors: 1 }
     showSyncNotice(result)
-    expect(noticeHistory[noticeHistory.length - 1]).toBe('Brainfeed: Synced 2 new, 3 updated, 1 errors')
+    expect(noticeHistory[noticeHistory.length - 1]).toBe('Synced 2 new, 3 updated, 1 errors')
   })
 })

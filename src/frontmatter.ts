@@ -19,8 +19,8 @@ export function findFileByBrainfeedId(
 
   for (const file of files) {
     const cache = app.metadataCache.getFileCache(file)
-    const id = cache?.frontmatter?.brainfeed_id
-    if (id != null && String(id) === brainfeedId) return file
+    const id = cache?.frontmatter?.brainfeed_id as string | undefined
+    if (id != null && id === brainfeedId) return file
   }
 
   return null

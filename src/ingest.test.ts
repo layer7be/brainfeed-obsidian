@@ -86,7 +86,7 @@ describe('pushToBrainfeed', () => {
     await pushToBrainfeed(app, api, file)
 
     expect(ingest).not.toHaveBeenCalled()
-    expect(noticeHistory[noticeHistory.length - 1]).toBe('This note has already been sent to Brainfeed')
+    expect(noticeHistory[noticeHistory.length - 1]).toBe('This note has already been sent')
   })
 
   it('calls processFrontMatter to add brainfeed_id', async () => {

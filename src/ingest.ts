@@ -16,7 +16,7 @@ export async function pushToBrainfeed(
   // Parse frontmatter to extract title and any existing brainfeed_id
   const existingId = extractBrainfeedId(content)
   if (existingId) {
-    new Notice('This note has already been sent to Brainfeed')
+    new Notice('This note has already been sent')
     return
   }
 
@@ -53,7 +53,7 @@ export async function pushToBrainfeed(
   const result = await api.ingest({ title, content: body, tags })
 
   // Update frontmatter with brainfeed_id using processFrontMatter
-  await app.fileManager.processFrontMatter(file, (fm) => {
+  await app.fileManager.processFrontMatter(file, (fm: Record<string, unknown>) => {
     fm.brainfeed_id = result.contentId
   })
 

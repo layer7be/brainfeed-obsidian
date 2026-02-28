@@ -5,8 +5,7 @@ import BrainfeedPlugin from './main'
 import { DEFAULT_SETTINGS } from './settings'
 
 // The mock Plugin base class accepts 0 args; the real one needs (app, manifest).
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const PluginCtor = BrainfeedPlugin as unknown as new () => BrainfeedPlugin & Record<string, any>
+const PluginCtor = BrainfeedPlugin as unknown as new () => BrainfeedPlugin & Record<string, unknown>
 
 function createPlugin(loadDataReturn: unknown = null): BrainfeedPlugin & Record<string, unknown> {
   const plugin = new PluginCtor()
@@ -79,7 +78,7 @@ describe('BrainfeedPlugin', () => {
       const api = plugin['getApi']()
 
       expect(api).toBeNull()
-      expect(noticeHistory[noticeHistory.length - 1]).toBe('Brainfeed: Please set your API key in settings')
+      expect(noticeHistory[noticeHistory.length - 1]).toBe('Please set your API key in settings')
     })
 
     it('returns BrainfeedApi when apiKey is set', async () => {
@@ -98,15 +97,17 @@ describe('BrainfeedPlugin', () => {
 
       await plugin.onload()
 
+      /* eslint-disable @typescript-eslint/unbound-method -- vitest mock functions assigned as class properties don't use this */
       expect(plugin.addCommand).toHaveBeenCalledTimes(2)
       expect(plugin.addCommand).toHaveBeenCalledWith(
-        expect.objectContaining({ id: 'sync-from-brainfeed' }),
+        expect.objectContaining({ id: 'sync' }),
       )
       expect(plugin.addCommand).toHaveBeenCalledWith(
-        expect.objectContaining({ id: 'send-to-brainfeed' }),
+        expect.objectContaining({ id: 'send-note' }),
       )
       expect(plugin.addRibbonIcon).toHaveBeenCalledTimes(1)
       expect(plugin.addSettingTab).toHaveBeenCalledTimes(1)
+      /* eslint-enable @typescript-eslint/unbound-method */
     })
   })
 
