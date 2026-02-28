@@ -1,0 +1,16 @@
+{
+  "name": "obsidian-brainfeed",
+  "version": "1.0.0",
+  "description": "Brainfeed plugin for Obsidian",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "node esbuild.config.mjs production"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.27.3",
+    "obsidian": "^1.7.2",
+    "typescript": "^5.7.0"
+  }
+}
