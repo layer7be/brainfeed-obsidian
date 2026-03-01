@@ -107,7 +107,7 @@ describe('BrainfeedPlugin', () => {
       )
       expect(plugin.addRibbonIcon).toHaveBeenCalledTimes(1)
       expect(plugin.addSettingTab).toHaveBeenCalledTimes(1)
-      /* eslint-enable @typescript-eslint/unbound-method */
+      /* eslint-enable @typescript-eslint/unbound-method -- re-enable after mock assertions */
     })
   })
 
