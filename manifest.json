@@ -1,7 +1,7 @@
 {
   "id": "brainfeed",
   "name": "Brainfeed.ai",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "minAppVersion": "1.0.0",
   "description": "Sync your Brainfeed content and send notes for summarization.",
   "author": "Brainfeed",
