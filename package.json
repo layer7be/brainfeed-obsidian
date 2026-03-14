@@ -20,7 +20,7 @@
     "eslint-plugin-obsidianmd": "^0.1.9",
     "obsidian": "^1.7.2",
     "typescript": "^5.7.0",
-    "typescript-eslint": "^8.56.1",
+    "typescript-eslint": "^8.57.0",
     "vitest": "^4.0.18"
   }
 }
